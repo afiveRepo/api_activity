@@ -2,6 +2,6 @@ package entity
 
 type ActivityGroups struct {
 	BaseEntity
-	Tittle string `json:"tittle"`
-	Email  string `json:"email"`
+	Title string `json:"title"`
+	Email string `json:"email"`
 }

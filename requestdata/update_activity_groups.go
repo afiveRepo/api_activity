@@ -1,5 +1,5 @@
 package requestdata
 
 type UpdateActivityGroups struct {
-	Tittle string `json:"tittle"`
+	Title string `json:"title"`
 }

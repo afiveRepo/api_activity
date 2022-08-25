@@ -39,7 +39,7 @@ func (s *activityGroupService) Create(input requestdata.CreateActicityGroups) (e
 }
 func (s *activityGroupService) UpdateByID(input requestdata.UpdateActivityGroups, id int64) (entity.ActivityGroups, error) {
 	data := map[string]interface{}{
-		"tittle": input.Tittle,
+		"title": input.Title,
 	}
 	res, err := s.repo.UpdateByID(data, id)
 	return res, err
