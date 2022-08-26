@@ -1,7 +1,6 @@
-package entity
+package requestdata
 
-type Todo struct {
-	BaseEntity
+type UpdateTodo struct {
 	Title           string `json:"title"`
 	IsActive        bool   `json:"is_active"`
 	Priority        string `json:"priority"`

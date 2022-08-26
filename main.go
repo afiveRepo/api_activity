@@ -24,6 +24,10 @@ func main() {
 	acgService := services.New(acgRepo)
 	acgController := controller.New(acgService)
 
+	todoRepo := repository.NewTodo(db)
+	todoService := services.NewTodo(acgRepo, todoRepo)
+	todoController := controller.NewTodo(todoService)
+
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{
 		AllowWildcard:    true,
@@ -38,5 +42,15 @@ func main() {
 	r.GET("/activity-groups", acgController.FindAll)
 	r.GET("/activity-groups/:id", acgController.FindByID)
 	r.POST("/activity-groups", acgController.Create)
+	r.PATCH("/activity-groups/:id", acgController.UpdateByID)
+	r.DELETE("/activity-groups/:id", acgController.DeleteByID)
+
+	r.GET("/todo-items", todoController.FindAll)
+	r.GET("/todo-items/:id", todoController.FindByID)
+	//r.GET("/todo-items",todoController.FindByGroupID)
+	r.POST("/todo-items", todoController.Create)
+	r.PATCH("/todo-items/:id", todoController.UpdateByID)
+	r.DELETE("/todo-items/:id", todoController.DeleteByID)
+
 	r.Run("localhost:3030")
 }

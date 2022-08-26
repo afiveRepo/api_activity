@@ -1,6 +1,7 @@
 package config
 
 import (
+	"api_activity/entity"
 	"fmt"
 	"os"
 
@@ -22,6 +23,6 @@ func ConnectionDB() (db *gorm.DB) {
 		fmt.Printf("connection error")
 	}
 	//migration entity
-	db.AutoMigrate()
+	db.AutoMigrate(entity.ActivityGroups{}, entity.Todo{})
 	return db
 }

@@ -8,7 +8,7 @@ import (
 
 type ActivityGroupsService interface {
 	FindByID(id int64) (entity.ActivityGroups, error)
-	FindByAll() ([]entity.ActivityGroups, error)
+	FindAll() ([]entity.ActivityGroups, error)
 	Create(input requestdata.CreateActicityGroups) (entity.ActivityGroups, error)
 	UpdateByID(input requestdata.UpdateActivityGroups, id int64) (entity.ActivityGroups, error)
 	DeleteByID(id int64) error
@@ -26,7 +26,7 @@ func (s *activityGroupService) FindByID(id int64) (entity.ActivityGroups, error)
 	res, err := s.repo.FindByID(id)
 	return res, err
 }
-func (s *activityGroupService) FindByAll() ([]entity.ActivityGroups, error) {
+func (s *activityGroupService) FindAll() ([]entity.ActivityGroups, error) {
 	res, err := s.repo.FindAll()
 	return res, err
 }
