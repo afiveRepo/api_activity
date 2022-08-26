@@ -59,8 +59,7 @@ func (s *todoService) UpdateByID(input requestdata.UpdateTodo, id int64) (*entit
 	var err error
 	_, err = s.agRepo.FindByID(input.ActivityGroupID)
 	if err != nil {
-
-		err = errors.New(fmt.Sprintf("Activity with activity_group_id %s Not Found", input.ActivityGroupID))
+		err = fmt.Errorf("activity with activity_group_id %v Not Found",id)
 		return nil, err
 	}
 	data := map[string]interface{}{
