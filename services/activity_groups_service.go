@@ -4,6 +4,7 @@ import (
 	"api_activity/entity"
 	"api_activity/repository"
 	"api_activity/requestdata"
+	"errors"
 )
 
 type ActivityGroupsService interface {
@@ -49,6 +50,12 @@ func (s *activityGroupService) UpdateByID(input requestdata.UpdateActivityGroups
 	return res, err
 }
 func (s *activityGroupService) DeleteByID(id int64) error {
-	err := s.repo.DeleteByID(id)
+	var err error
+	_, err = s.FindByID(id)
+	if err != nil {
+		err = errors.New("Not Found")
+	} else {
+		err = s.repo.DeleteByID(id)
+	}
 	return err
 }
