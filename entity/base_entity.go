@@ -9,10 +9,10 @@ import (
 const FORMAT_TIME = "2006-01-02 15:04:05"
 
 type BaseEntity struct {
-	ID        int64     `gorm:"primary_key:auto_increment" json:"-"`
-	CreatedAt time.Time `json:"-"`
-	UpdatedAt time.Time `json:"-"`
-	DeletedAt time.Time `json:"-"`
+	ID        int64     `gorm:"primary_key:auto_increment" json:"id"`
+	CreatedAt *time.Time `json:"created_at"`
+	UpdatedAt *time.Time `json:"updated_at"`
+	DeletedAt *time.Time `json:"deleted_at"`
 }
 
 func (base *BaseEntity) BeforeCreate(tx *gorm.DB) error {

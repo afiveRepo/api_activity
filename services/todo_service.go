@@ -42,8 +42,8 @@ func (s *todoService) Create(input requestdata.CreateTodo) (*entity.Todo, error)
 	var err error
 	_, err = s.agRepo.FindByID(input.ActivityGroupID)
 	if err != nil {
-
-		err = errors.New(fmt.Sprintf("Activity with activity_group_id %s Not Found", input.ActivityGroupID))
+		id := input.ActivityGroupID
+		err = fmt.Errorf("activity with activity_group_id %v Not Found",id)
 		return nil, err
 	}
 	data := entity.Todo{

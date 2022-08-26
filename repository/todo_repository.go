@@ -2,6 +2,7 @@ package repository
 
 import (
 	"api_activity/entity"
+	"errors"
 
 	"gorm.io/gorm"
 )
@@ -24,7 +25,11 @@ func NewTodo(db *gorm.DB) TodoRepository {
 }
 func (r *todoRepository) FindByID(id int64) (entity.Todo, error) {
 	var todo entity.Todo
-	err := r.db.Find(&todo, id).Error
+	var err error
+	query := r.db.Find(&todo, id)
+	if query.RowsAffected == 0 {
+		err = errors.New("Not Found")
+	}
 	return todo, err
 }
 func (r *todoRepository) FindByGroupID(id int64) ([]entity.Todo, error) {
@@ -37,10 +42,9 @@ func (r *todoRepository) FindAll() ([]entity.Todo, error) {
 	err := r.db.Find(&todo).Error
 	return todo, err
 }
-func (r *todoRepository) Create(entity.Todo) (entity.Todo, error) {
-	var todo entity.Todo
-	err := r.db.Create(&todo).Error
-	return todo, err
+func (r *todoRepository) Create(input entity.Todo) (entity.Todo, error) {
+	err := r.db.Create(&input).Error
+	return input, err
 }
 func (r *todoRepository) DeleteByID(id int64) error {
 	var todo entity.Todo
