@@ -2,6 +2,7 @@ package repository
 
 import (
 	"api_activity/entity"
+	"errors"
 
 	"gorm.io/gorm"
 )
@@ -23,7 +24,11 @@ func New(db *gorm.DB) ActivityGroupRepo {
 }
 func (r *activityGroupRepo) FindByID(id int64) (entity.ActivityGroups, error) {
 	var acg entity.ActivityGroups
-	err := r.db.Find(&acg).Error
+	var err error
+	query := r.db.Find(&acg,id)
+	if query.RowsAffected == 0 {
+		err = errors.New("Not Found")
+	}
 	return acg, err
 }
 func (r *activityGroupRepo) FindAll() ([]entity.ActivityGroups, error) {
@@ -31,10 +36,9 @@ func (r *activityGroupRepo) FindAll() ([]entity.ActivityGroups, error) {
 	err := r.db.Find(&acg).Error
 	return acg, err
 }
-func (r *activityGroupRepo) Create(entity.ActivityGroups) (entity.ActivityGroups, error) {
-	var acg entity.ActivityGroups
-	err := r.db.Create(&acg).Error
-	return acg, err
+func (r *activityGroupRepo) Create(input entity.ActivityGroups) (entity.ActivityGroups, error) {
+	err := r.db.Create(&input).Error
+	return input, err
 }
 func (r *activityGroupRepo) DeleteByID(id int64) error {
 	var acg entity.ActivityGroups

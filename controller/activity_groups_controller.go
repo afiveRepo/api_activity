@@ -39,6 +39,7 @@ func (c *activityGroupController) FindByID(ctx *gin.Context) {
 		})
 		return
 	}
+
 	ctx.JSON(http.StatusOK, response.BaseRespone{
 		Status:  "Success",
 		Message: "Success",
@@ -56,6 +57,7 @@ func (c *activityGroupController) FindAll(ctx *gin.Context) {
 		})
 		return
 	}
+
 	ctx.JSON(http.StatusOK, response.BaseRespone{
 		Status:  "Success",
 		Message: "Success",
@@ -69,6 +71,15 @@ func (c *activityGroupController) Create(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, response.BaseRespone{
 			Status:  err.Error(),
 			Message: err.Error(),
+			Data:    response.EmptyObj{},
+		})
+		return
+	}
+	errval := input.Validate()
+	if errval != nil {
+		ctx.JSON(http.StatusBadRequest, response.BaseRespone{
+			Status:  "Bad Request",
+			Message: errval.Error(),
 			Data:    response.EmptyObj{},
 		})
 		return
@@ -97,6 +108,15 @@ func (c *activityGroupController) UpdateByID(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, response.BaseRespone{
 			Status:  err.Error(),
 			Message: err.Error(),
+			Data:    response.EmptyObj{},
+		})
+		return
+	}
+	errval := input.Validate()
+	if errval != nil {
+		ctx.JSON(http.StatusBadRequest, response.BaseRespone{
+			Status:  "Bad Request",
+			Message: errval.Error(),
 			Data:    response.EmptyObj{},
 		})
 		return

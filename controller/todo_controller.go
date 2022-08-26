@@ -13,7 +13,6 @@ import (
 
 type TodoController interface {
 	FindByID(ctx *gin.Context)
-	FindByGroupID(ctx *gin.Context)
 	FindAll(ctx *gin.Context)
 	Create(ctx *gin.Context)
 	UpdateByID(ctx *gin.Context)
@@ -46,40 +45,42 @@ func (c *todoController) FindByID(ctx *gin.Context) {
 	})
 
 }
-func (c *todoController) FindByGroupID(ctx *gin.Context) {
-	paramid := ctx.Param("id")
-	id, _ := strconv.ParseInt(paramid, 10, 64)
-	res, err := c.service.FindByGroupID(id)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, response.BaseRespone{
-			Status:  "Not Found",
-			Message: fmt.Sprintf("Activity with ID %s Not Found", id),
-			Data:    response.EmptyObj{},
-		})
-		return
-	}
-	ctx.JSON(http.StatusOK, response.BaseRespone{
-		Status:  "Success",
-		Message: "Success",
-		Data:    res,
-	})
 
-}
 func (c *todoController) FindAll(ctx *gin.Context) {
-	res, err := c.service.FindAll()
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, response.BaseRespone{
-			Status:  err.Error(),
-			Message: err.Error(),
-			Data:    response.EmptyObj{},
+	param := ctx.Query("activity_group_id")
+	if  param != "" {
+		gid,_ := strconv.ParseInt(param,10,64)
+		res, err := c.service.FindByGroupID(gid)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, response.BaseRespone{
+				Status:  err.Error(),
+				Message: err.Error(),
+				Data:    response.EmptyObj{},
+			})
+			return
+		}
+		ctx.JSON(http.StatusOK, response.BaseRespone{
+			Status:  "Success",
+			Message: "Success",
+			Data:    res,
 		})
-		return
+	}else{
+		res, err := c.service.FindAll()
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, response.BaseRespone{
+				Status:  err.Error(),
+				Message: err.Error(),
+				Data:    response.EmptyObj{},
+			})
+			return
+		}
+		ctx.JSON(http.StatusOK, response.BaseRespone{
+			Status:  "Success",
+			Message: "Success",
+			Data:    res,
+		})
 	}
-	ctx.JSON(http.StatusOK, response.BaseRespone{
-		Status:  "Success",
-		Message: "Success",
-		Data:    res,
-	})
+
 }
 func (c *todoController) Create(ctx *gin.Context) {
 	var input requestdata.CreateTodo
@@ -92,10 +93,19 @@ func (c *todoController) Create(ctx *gin.Context) {
 		})
 		return
 	}
+	errval := input.Validate()
+	if errval != nil {
+		ctx.JSON(http.StatusBadRequest, response.BaseRespone{
+			Status:  "Bad Request",
+			Message: errval.Error(),
+			Data:    response.EmptyObj{},
+		})
+		return
+	}
 	res, err := c.service.Create(input)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, response.BaseRespone{
-			Status:  err.Error(),
+			Status:  "Not Found",
 			Message: err.Error(),
 			Data:    response.EmptyObj{},
 		})
@@ -116,6 +126,15 @@ func (c *todoController) UpdateByID(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, response.BaseRespone{
 			Status:  err.Error(),
 			Message: err.Error(),
+			Data:    response.EmptyObj{},
+		})
+		return
+	}
+	errval := input.Validate()
+	if errval != nil {
+		ctx.JSON(http.StatusBadRequest, response.BaseRespone{
+			Status:  "Bad Request",
+			Message: errval.Error(),
 			Data:    response.EmptyObj{},
 		})
 		return

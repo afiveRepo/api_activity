@@ -47,10 +47,9 @@ func main() {
 
 	r.GET("/todo-items", todoController.FindAll)
 	r.GET("/todo-items/:id", todoController.FindByID)
-	//r.GET("/todo-items",todoController.FindByGroupID)
 	r.POST("/todo-items", todoController.Create)
 	r.PATCH("/todo-items/:id", todoController.UpdateByID)
 	r.DELETE("/todo-items/:id", todoController.DeleteByID)
 
-	r.Run("localhost:3030")
+	r.Run("0.0.0.0:3030")
 }

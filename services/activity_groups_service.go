@@ -31,8 +31,12 @@ func (s *activityGroupService) FindAll() ([]entity.ActivityGroups, error) {
 	return res, err
 }
 func (s *activityGroupService) Create(input requestdata.CreateActicityGroups) (entity.ActivityGroups, error) {
+	if input.Title == ""{
+		input.Title = "New Activity"
+	}
 	data := entity.ActivityGroups{
 		Email: input.Email,
+		Title: input.Title,
 	}
 	res, err := s.repo.Create(data)
 	return res, err
