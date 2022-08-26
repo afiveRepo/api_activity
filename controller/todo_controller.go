@@ -11,23 +11,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type ActivityGroupController interface {
+type TodoController interface {
 	FindByID(ctx *gin.Context)
+	FindByGroupID(ctx *gin.Context)
 	FindAll(ctx *gin.Context)
 	Create(ctx *gin.Context)
 	UpdateByID(ctx *gin.Context)
 	DeleteByID(ctx *gin.Context)
 }
 
-type activityGroupController struct {
-	service services.ActivityGroupsService
+type todoController struct {
+	service services.TodoService
 }
 
-func New(service services.ActivityGroupsService) ActivityGroupController {
-	return &activityGroupController{service}
+func NewTodo(service services.TodoService) TodoController {
+	return &todoController{service}
 }
-
-func (c *activityGroupController) FindByID(ctx *gin.Context) {
+func (c *todoController) FindByID(ctx *gin.Context) {
 	paramid := ctx.Param("id")
 	id, _ := strconv.ParseInt(paramid, 10, 64)
 	res, err := c.service.FindByID(id)
@@ -46,7 +46,26 @@ func (c *activityGroupController) FindByID(ctx *gin.Context) {
 	})
 
 }
-func (c *activityGroupController) FindAll(ctx *gin.Context) {
+func (c *todoController) FindByGroupID(ctx *gin.Context) {
+	paramid := ctx.Param("id")
+	id, _ := strconv.ParseInt(paramid, 10, 64)
+	res, err := c.service.FindByGroupID(id)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, response.BaseRespone{
+			Status:  "Not Found",
+			Message: fmt.Sprintf("Activity with ID %s Not Found", id),
+			Data:    response.EmptyObj{},
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, response.BaseRespone{
+		Status:  "Success",
+		Message: "Success",
+		Data:    res,
+	})
+
+}
+func (c *todoController) FindAll(ctx *gin.Context) {
 	res, err := c.service.FindAll()
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, response.BaseRespone{
@@ -62,8 +81,8 @@ func (c *activityGroupController) FindAll(ctx *gin.Context) {
 		Data:    res,
 	})
 }
-func (c *activityGroupController) Create(ctx *gin.Context) {
-	var input requestdata.CreateActicityGroups
+func (c *todoController) Create(ctx *gin.Context) {
+	var input requestdata.CreateTodo
 	err := ctx.ShouldBindJSON(&input)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, response.BaseRespone{
@@ -88,8 +107,8 @@ func (c *activityGroupController) Create(ctx *gin.Context) {
 		Data:    res,
 	})
 }
-func (c *activityGroupController) UpdateByID(ctx *gin.Context) {
-	var input requestdata.UpdateActivityGroups
+func (c *todoController) UpdateByID(ctx *gin.Context) {
+	var input requestdata.UpdateTodo
 	paramid := ctx.Param("id")
 	id, _ := strconv.ParseInt(paramid, 10, 64)
 	err := ctx.ShouldBindJSON(&input)
@@ -116,7 +135,7 @@ func (c *activityGroupController) UpdateByID(ctx *gin.Context) {
 		Data:    res,
 	})
 }
-func (c *activityGroupController) DeleteByID(ctx *gin.Context) {
+func (c *todoController) DeleteByID(ctx *gin.Context) {
 	paramid := ctx.Param("id")
 	id, _ := strconv.ParseInt(paramid, 10, 64)
 	err := c.service.DeleteByID(id)
